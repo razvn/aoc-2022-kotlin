@@ -28,7 +28,7 @@ fun main() {
     println(part2(input))
 }
 
-enum class RPS(val value: Int) {
+private enum class RPS(val value: Int) {
     Rock(1),
     Paper(2),
     Scissors(3),
@@ -40,7 +40,7 @@ enum class Result(val value: Int) {
     LOSE(0)
 }
 
-fun calcResult(p1: RPS, p2: RPS): Result {
+private fun calcResult(p1: RPS, p2: RPS): Result {
     return when (p2) {
         RPS.Paper -> when (p1) {
             RPS.Paper -> Result.DRAW
@@ -62,14 +62,14 @@ fun calcResult(p1: RPS, p2: RPS): Result {
     }
 }
 
-fun calcPlayer(char: Char): RPS = when (char) {
+private fun calcPlayer(char: Char): RPS = when (char) {
     'A', 'X' -> RPS.Rock
     'B', 'Y' -> RPS.Paper
     'C', 'Z' -> RPS.Scissors
     else -> throw Exception("Unknown value $char")
 }
 
-fun calcPlayerFromResult(p1: RPS, result: Result): RPS {
+private fun calcPlayerFromResult(p1: RPS, result: Result): RPS {
     return when (p1) {
         RPS.Rock -> when (result) {
             Result.DRAW -> RPS.Rock
@@ -91,7 +91,7 @@ fun calcPlayerFromResult(p1: RPS, result: Result): RPS {
     }
 }
 
-fun calcResult(char: Char): Result = when (char) {
+private fun calcResult(char: Char): Result = when (char) {
     'X' -> Result.LOSE
     'Y' -> Result.DRAW
     'Z' -> Result.WIN
