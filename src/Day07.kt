@@ -20,7 +20,7 @@ fun main() {
     fun part1(input:List<String>): Long {
         val root = dirTree(input)
         val maxSize = 100000
-        val validDirs = getSubDirs(emptyList(), root) { it.size() <=  maxSize }
+        val validDirs = getSubDirs(listOf(root), emptyList()) { it.size() <=  maxSize } // getSubDirs(emptyList(), root) { it.size() <=  maxSize }
         // println("Valid dirs: $validDirs")
         return validDirs.sumOf { it.size() }
     }
@@ -33,15 +33,15 @@ fun main() {
         // println("Free space: $freeSpace")
         val needSpace = updateSize - freeSpace
         // println("Need space: $needSpace")
-        val validDirs = getSubDirs(emptyList(), root) { it.size() >=  needSpace }
+        val validDirs = getSubDirs(listOf(root), emptyList()) { it.size() >=  needSpace }
         // println("Valid dirs: $validDirs")
         return validDirs.minOf { it.size() }
     }
 
     // test if implementation meets criteria from the description, like:
     val testInput = readInput("${day}_test")
-    println(part1(testInput))
-    println(part2(testInput))
+    // println(part1(testInput))
+    // println(part2(testInput))
     check(part1(testInput) == 95437L)
     check(part2(testInput) == 24933642L)
 
@@ -50,13 +50,17 @@ fun main() {
     println(part2(input))
 }
 
-private fun getSubDirs(acc: List<Dir>, dir: Dir, fn: (d: Dir) -> Boolean): List<Dir> {
-    val newAcc = if (fn(dir)) acc + dir else acc
+private tailrec fun getSubDirs(check: List<Dir>, result: List<Dir>, fn: (d: Dir) -> Boolean): List<Dir> {
     return when {
-        dir.subDirs.isEmpty() -> newAcc
-        else -> dir.subDirs.flatMap { getSubDirs(newAcc, it, fn) }
+        check.isEmpty() -> result
+        else -> {
+            val head = check.first()
+            val newResult = if (fn(head)) result + head else result
+            getSubDirs(check.drop(1) + head.subDirs, newResult, fn)
+        }
     }
 }
+
 private tailrec fun chDir(name: String, dir: Dir): Dir {
     return when(name) {
         "/" -> if (dir.name == "/" || dir.parentDir == null) dir else chDir(name, dir.parentDir)
