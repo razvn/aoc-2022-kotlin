@@ -1,21 +1,5 @@
 fun main() {
     val day = "Day07"
-    fun dirTree(input: List<String>): Dir {
-        val rootDir = Dir("/")
-        var currentDir: Dir =  rootDir
-        input.forEach { line ->
-            // println("line: $line - $currentDir")
-            when {
-                line.startsWith("$ cd") -> currentDir = chDir(line.substringAfter("$ cd "), currentDir)
-                line.startsWith("$ ls") -> Unit
-                line.startsWith("dir ") -> with(Dir(line.substringAfter("dir "), currentDir)) {
-                    currentDir.subDirs.add(this)
-                }
-                else -> currentDir.files.add(File(line))
-            }
-        }
-        return rootDir
-    }
 
     fun part1(input:List<String>): Long {
         val root = dirTree(input)
@@ -76,4 +60,21 @@ private data class  Dir(val name: String, val parentDir: Dir? = null) {
     val subDirs: MutableList<Dir> = mutableListOf()
     val files: MutableList<File> = mutableListOf()
     fun  size(): Long = files.sumOf { it.size } + subDirs.sumOf { it.size() }
+}
+
+private fun dirTree(input: List<String>): Dir {
+    val rootDir = Dir("/")
+    var currentDir: Dir =  rootDir
+    input.forEach { line ->
+        // println("line: $line - $currentDir")
+        when {
+            line.startsWith("$ cd") -> currentDir = chDir(line.substringAfter("$ cd "), currentDir)
+            line.startsWith("$ ls") -> Unit
+            line.startsWith("dir ") -> with(Dir(line.substringAfter("dir "), currentDir)) {
+                currentDir.subDirs.add(this)
+            }
+            else -> currentDir.files.add(File(line))
+        }
+    }
+    return rootDir
 }
